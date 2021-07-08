@@ -23,7 +23,7 @@ class Solution
             {
                 q.push(curr->left);
                 mp[curr->left]=mp[curr]-1;
-                if(mp1.count(mp[curr->left])==0)
+                if(mp1.count(mp[curr->left])==0)//count is to check if that key is present or not in the map , if present it'll return 1 otherwise zero
                 {
                     mp1[mp[curr->left]]=curr->left->data;
                 }
