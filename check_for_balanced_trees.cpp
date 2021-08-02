@@ -8,7 +8,7 @@ int func(Node *root, int &ans)
     if(abs(x-y)>1)
         {
             ans=0;
-
+            return 0;
         }
         return (max(x,y)+1) ;
 }
