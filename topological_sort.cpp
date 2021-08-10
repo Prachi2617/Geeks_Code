@@ -1,3 +1,35 @@
+//below is the dfs approach of topological sort	
+void dfs(int src,vector<int>adj[],stack<int>&st,vector<int>&vis)
+	{
+	    vis[src]=1;
+	    for(int i=0;i<adj[src].size();i++)
+	    {
+	        int child=adj[src][i];
+	        if(!vis[child])
+	            dfs(child,adj,st,vis);
+	    }
+	    st.push(src);
+	}
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    vector<int> ans;
+	    vector<int>vis(V,0);
+	    int i;
+	    stack<int>st;
+	    for(i=0;i<V;i++)
+	    {
+	        if(!vis[i])
+	            dfs(i,adj,st,vis);
+	    }
+	    while(!st.empty())
+	    {
+	        int tt=st.top();
+	        ans.push_back(tt);
+	        st.pop();
+	    }
+	    return ans;
+	}
+//below is the bfs approach of topological sort
 vector<int> topoSort(int V, vector<int> adj[])
 	{
 	    vector<int>ans;
