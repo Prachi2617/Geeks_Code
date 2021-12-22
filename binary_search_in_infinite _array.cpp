@@ -3,16 +3,18 @@ using namespace std;
 
 int binary_search(int l, int h,int n,vector<int>A, int x)
 {
-    while(l<h)
+
+    while(l<=h)
     {
         int mid=(l+h)/2;
+
         if(A[mid]>x)
         {
-            h=mid;
+            h=mid-1;
         }
         else if(x>A[mid])
         {
-            l=mid;
+            l=mid+1;
         }
         else if(x==A[mid])
         {
@@ -20,18 +22,26 @@ int binary_search(int l, int h,int n,vector<int>A, int x)
         }
 
     }
+    cout<<"\nhell";
     return -1;
 }
 
 
 int find_pos(int n, vector<int>A, int x)
 {
-    int l=0, h=1;
-    while(A[h]<x)
+    int l=0, h=1, val=A[0];
+    while(val<x)
     {
         l=h;
         h=2*h;
+        if(h>A.size())
+        {
+            h=A.size();
+            break;
+        }
+        val=A[h];
     }
+    cout<<"\nl: "<<l <<" h: "<<h;
     int y= binary_search(l,h,n,A, x);
     return y;
 }
