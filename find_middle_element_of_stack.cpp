@@ -16,9 +16,9 @@ Node *dummy=new Node(-1);
 Node *head=dummy;
 Node *mid=dummy;
 int cnt=0;
-
+    
 void push(int x)
-{
+{ 
     Node *temp=new Node(x);
     temp->next=head;
     head->prev=temp;
