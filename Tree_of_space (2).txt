@@ -1,0 +1,211 @@
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <string>
+using namespace std;
+class Node
+{
+	string val;
+	int no_of_childs,uid;
+	bool isLocked;
+	vector<Node*> childs;
+	Node* parent;
+	map<int,int> uids;
+	map<Node*,int> locked_child;
+	public:
+	Node(string val,Node* parent)
+	{
+		this->val=val;
+		this->parent=parent;
+		no_of_childs=0;
+		uid=0;
+		isLocked=false;
+	}
+	void addlocked_child(Node *root)
+	{
+		locked_child[root]=1;
+	}
+	void remove_locked_child(Node *root)
+	{
+		locked_child.erase(root);
+	}
+	map<Node*,int> getlocked_child()
+	{
+		return locked_child;
+	}
+	void setisLocked(bool flag)
+	{
+		isLocked=flag;
+	}
+	bool getisLocked()
+	{
+		return isLocked;
+	}
+	Node* getParent()
+	{
+		return parent;
+	}
+	string getVal()
+	{
+		return val;
+	}
+	void addChild(Node *node)
+	{
+		childs.push_back(node);
+	}
+	vector<Node*> getChilds()
+	{
+		return childs;
+	}
+	void setno_of_childs(int ch)
+	{
+		no_of_childs+=ch;
+	}
+	int getno_of_childs()
+	{
+		return no_of_childs;
+	}
+	void setUid(int uid)
+	{
+		uids[uid]++;
+	}
+	void decUid(int uid)
+	{
+		uids[uid]--;
+	}
+	int getUid(int uid)
+	{
+		return uids[uid];
+	}
+	void setuid(int uid)
+	{
+        this->uid=uid;
+	}
+	int getuid()
+	{
+        return uid;
+	}
+};
+bool checkParent(Node *root)
+{
+	bool res=false;
+	while(root!=NULL)
+	{
+		if(root->getisLocked())
+		{
+			res=true;
+			break;
+		}
+		root=root->getParent();
+	}
+	return res;
+}
+bool setLock(Node *root,int uid)
+{
+	if(root->getisLocked()||root->getno_of_childs()>0||checkParent(root))
+	return false;
+	root->setisLocked(true);
+	root->setuid(uid);
+	Node *temp=root->getParent();
+	while(temp!=NULL)
+	{
+		temp->setno_of_childs(1);
+		temp->setUid(uid);
+		temp->addlocked_child(root);
+		temp=temp->getParent();
+	}
+	return true;
+}
+bool setUnlock(Node *root,int uid)
+{
+	if(!root->getisLocked()||root->getuid()!=uid)
+	return false;
+	root->setisLocked(false);
+	root->setuid(0);
+	Node *temp=root->getParent();
+	while(temp!=NULL)
+	{
+		temp->setno_of_childs(-1);
+		if(temp->getno_of_childs()==0)
+		temp->decUid(uid);
+		temp->remove_locked_child(root);
+		temp=temp->getParent();
+	}
+	return true;
+}
+
+void upgradeunLock(Node *root,int uid)
+{
+	if(root->getisLocked())
+	{
+		setUnlock(root,uid);
+		return;
+	}
+	for(Node* x:root->getChilds())
+	{
+		if(x->getno_of_childs()>0||x->getisLocked())
+		{
+			upgradeunLock(x,uid);
+		}
+	}
+	return ;
+}
+bool upgradeLock(Node *root,int uid)
+{
+	if(root->getisLocked()||root->getno_of_childs()==0||checkParent(root)||root->getno_of_childs()!=root->getUid(uid))
+	return false;
+	upgradeunLock(root,uid);
+	setLock(root,uid);
+	return true;
+}
+int main()
+{
+	int n,m,q;
+	cin>>n;
+	cin>>m;
+	cin>>q;
+	map<string,int> mp;
+	vector<Node*> tree(n);
+	string val;
+	for(int i=0;i<n;i++)
+	{
+		cin>>val;
+		mp[val]=i;
+		if(i==0)
+		{
+			tree[i]=new Node(val,NULL);
+		}
+		else
+		{
+			tree[i]=new Node(val,tree[(i-1)/m]);
+			tree[(i-1)/m]->addChild(tree[i]);
+		}
+	}
+	int op,uid;
+	bool res;
+	Node *root;
+	for(int i=0;i<q;i++)
+	{
+		cin>>op>>val>>uid;
+		root=tree[mp[val]];
+		if(op==1)
+		{
+			res=setLock(root,uid);
+		}
+		else if(op==2)
+		{
+			res=setUnlock(root,uid);
+		}
+		else
+		{
+			res=upgradeLock(root,uid);
+		}
+		if(res)
+		cout<<"true\n";
+		else
+		cout<<"false\n";
+	}
+
+}
+
