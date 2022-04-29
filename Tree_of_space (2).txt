@@ -209,3 +209,13 @@ int main()
 
 }
 
+/*
+Then comes Part B: for this they will ask you what problems can be there in case of multithreading?
+ans:1. the problem that will arise with thread is race condition and normally we will use a synchronized block or semaphore to restrict access.
+2.if the nodes we wanna lock does not intersect that means are not ancestors or descendents of each other, then they can be locked simultaneously.
+3..LockedDescendantCount would be incremented more than once. Multiple counting issue will happen.
+4. both the threads can get true as the return suggesting that lock was acquired by both of them
+5.if decendants are true also then it can return true. ideally it should have returned false. in multi threading scenario.
+
+Solution: As previously said in this post, they were adamant on not using any sort of lock or synchronization. they want generic solution for this without using semaphore,lock,mutex,synchronization. I was not able to think any generic solution.
+*/
